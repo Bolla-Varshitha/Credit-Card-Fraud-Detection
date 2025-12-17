@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraudShield AI | Fraud Detection Platform</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        .avatar-section {
+    position: relative;
+}
+
+.avatar-options {
+    display: none;
+}
+
+.avatar-options.show {
+    display: block;
+}
+
+.avatar-option {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.avatar-option:hover {
+    transform: scale(1.1);
+    border-color: var(--accent);
+}
+
+.avatar-option.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-avatar-large:hover::after {
+    content: '📷';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.user-avatar-large.has-image {
+    background: none;
+}
+
+.user-avatar-large.has-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--accent);
+}
+        .user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0 auto;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 2px 0;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #1e3a8a;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="50" cy="50" r="2" fill="white"/></svg>');
+            background-size: 20px 20px;
+        }
+        
+        .logo {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .logo h2 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 2rem;
+            margin: 0 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+            border: none;
+            background: none;
+            color: inherit;
+            width: calc(100% - 2rem);
+            text-align: left;
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: white;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 2rem;
+        }
+        
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-status {
+            display: flex;
+            align-items: center;
+            margin-top: 2px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .user-profile .dropdown-toggle {
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .user-profile .dropdown-toggle:hover {
+            background: #f8f9fa;
+            border-color: #d1d5db;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Cards */
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        
+        /* Charts */
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        /* Risk Indicators */
+        .risk-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .risk-low { background: #dcfce7; color: #166534; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-high { background: #fee2e2; color: #991b1b; }
+        .risk-critical { background: #fecaca; color: #7f1d1d; font-weight: 700; }
+        
+        /* Transaction Table */
+        .transaction-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-header {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table-content {
+            padding: 0;
+        }
+        
+        .transaction-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+        
+        .transaction-row:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-row:hover {
+            background: #f8fafc;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+                margin: 10px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .transaction-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>
+                    <i class="fas fa-shield-alt"></i>
+                    FraudShield AI
+                </h2>
+                <small class="text-light opacity-75">Enterprise Fraud Platform</small>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    Dashboard
+                </div>
+                <div class="nav-item" data-tab="analyze">
+                    <i class="fas fa-search"></i>
+                    Transaction Analysis
+                </div>
+                <div class="nav-item" data-tab="batch">
+                    <i class="fas fa-file-csv"></i>
+                    Batch Processing
+                </div>
+                <div class="nav-item" data-tab="alerts">
+                    <i class="fas fa-bell"></i>
+                    Fraud Alerts
+                    <span class="badge bg-danger ms-2">12</span>
+                </div>
+                <div class="nav-item" data-tab="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics & Reports
+                </div>
+                <div class="nav-item" data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    System Settings
+                </div>
+            </div>
+            
+            <div class="mt-auto p-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="d-flex align-items-center text-light">
+                    <div class="user-avatar">AI</div>
+                    <div class="ms-3">
+                        <div class="fw-bold">AI Analyst</div>
+                        <small class="opacity-75">Security System</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+    <h1 id="page-title">Fraud Detection Dashboard</h1>
+    <div class="user-profile">
+        <div class="user-avatar">AD</div>
+        <div class="user-info">
+            <div class="fw-bold">Administrator</div>
+            <small class="text-muted" id="last-login-status">
+                <i class="fas fa-shield-alt me-1"></i> System Active
+            </small>
+            <div class="user-status">
+                <i class="fas fa-circle text-success me-1" style="font-size: 6px;"></i>
+                <small class="text-success">Secure Session</small>
+            </div>
+        </div>
+        <div class="dropdown ms-3">
+    <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" onclick="openProfileSettings()"><i class="fas fa-user-cog me-2"></i>Profile Settings</a></li>
+        <li><a class="dropdown-item" href="#" onclick="showQuickNavigation()"><i class="fas fa-compass me-2"></i>Quick Navigation</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+    </ul>
+</div>
+    </div>
+</div>
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content active">
+                <!-- Metrics -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-primary">98.01%</div>
+                            <div class="metric-label">Model AUC Score</div>
+                            <div class="metric-trend trend-up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2.3% from last week</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-success">96.37%</div>
+                            <div class="metric-label">Detection Accuracy</div>
+                            <div class="metric-trend trend-up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+1.7% improvement</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-warning">89.80%</div>
+                            <div class="metric-label">Fraud Recall Rate</div>
+                            <div class="metric-trend trend-up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+3.1% better</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="metric-card">
+                            <div class="metric-value text-danger">23</div>
+                            <div class="metric-label">Active Alerts</div>
+                            <div class="metric-trend trend-down">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-5 from yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h5 class="fw-bold">Fraud Detection Performance</h5>
+                                <select class="form-select" style="width: auto;">
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                </select>
+                            </div>
+                            <canvas id="performanceChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h5 class="fw-bold">Risk Distribution</h5>
+                            </div>
+                            <canvas id="riskChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Alerts -->
+                <div class="chart-container mt-4">
+                    <div class="chart-header">
+                        <h5 class="fw-bold">Recent High-Risk Transactions</h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="viewAllTransactions()">View All</button>
+                    </div>
+                    <div class="table-content">
+                        <div class="transaction-row" style="background: #fef2f2;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-credit-card text-danger me-3"></i>
+                                <div>
+                                    <div class="fw-bold">TX-7845-2291</div>
+                                    <small class="text-muted">Card ending 4512</small>
+                                </div>
+                            </div>
+                            <div>$2,847.50</div>
+                            <div>Electronics Store</div>
+                            <div><span class="risk-badge risk-critical">Critical</span></div>
+                            <div class="text-danger fw-bold">94.2%</div>
+                        </div>
+                        <div class="transaction-row" style="background: #fffbeb;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-credit-card text-warning me-3"></i>
+                                <div>
+                                    <div class="fw-bold">TX-8923-5567</div>
+                                    <small class="text-muted">Card ending 8891</small>
+                                </div>
+                            </div>
+                            <div>$1,234.00</div>
+                            <div>Online Retail</div>
+                            <div><span class="risk-badge risk-high">High</span></div>
+                            <div class="text-warning fw-bold">78.5%</div>
+                        </div>
+                        <div class="transaction-row">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-credit-card text-success me-3"></i>
+                                <div>
+                                    <div class="fw-bold">TX-3456-7821</div>
+                                    <small class="text-muted">Card ending 3345</small>
+                                </div>
+                            </div>
+                            <div>$45.67</div>
+                            <div>Coffee Shop</div>
+                            <div><span class="risk-badge risk-low">Low</span></div>
+                            <div class="text-success">12.3%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transaction Analysis Tab -->
+            <div id="analyze-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">Real-time Transaction Analysis</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Transaction Amount ($)</label>
+                                <input type="number" class="form-control" id="analyze-amount" value="149.99" step="0.01">
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">V1 (PCA Component)</label>
+                                        <input type="number" class="form-control" id="analyze-v1" value="-1.359" step="0.001">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">V2 (PCA Component)</label>
+                                        <input type="number" class="form-control" id="analyze-v2" value="-0.072" step="0.001">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">V3 (PCA Component)</label>
+                                        <input type="number" class="form-control" id="analyze-v3" value="2.536" step="0.001">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">V4 (PCA Component)</label>
+                                        <input type="number" class="form-control" id="analyze-v4" value="1.378" step="0.001">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100" onclick="analyzeTransaction()">
+                                <i class="fas fa-search me-2"></i>Analyze Transaction
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">Analysis Results</h5>
+                            <div id="analysis-results">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Enter transaction details and click analyze to see results</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Batch Processing Tab -->
+            <div id="batch-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">Batch Transaction Processing</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Upload CSV File</label>
+                                <input type="file" class="form-control" id="batch-file" accept=".csv">
+                                <small class="text-muted">Upload a CSV file containing transaction data for batch analysis</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Processing Mode</label>
+                                <select class="form-control" id="processing-mode">
+                                    <option value="standard">Standard Analysis</option>
+                                    <option value="deep">Deep Learning Analysis</option>
+                                    <option value="ensemble">Ensemble Model Analysis</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100" onclick="processBatch()">
+                                <i class="fas fa-cogs me-2"></i>Process Batch File
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">Batch Results</h5>
+                            <div id="batch-results">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Upload and process a CSV file to see results</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fraud Alerts Tab -->
+            <div id="alerts-tab" class="tab-content">
+                <div class="chart-container">
+                    <h5 class="fw-bold mb-4">Active Fraud Alerts</h5>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>12 Active Alerts</strong> - Requires immediate attention
+                    </div>
+                    
+                    <div class="table-content">
+                        <div class="transaction-row" style="background: #fef2f2;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle text-danger me-3"></i>
+                                <div>
+                                    <div class="fw-bold">Multiple International Transactions</div>
+                                    <small class="text-muted">Card: **** 4512 | 3 transactions in 5 minutes</small>
+                                </div>
+                            </div>
+                            <div>$4,567.89</div>
+                            <div>High Velocity</div>
+                            <div><span class="risk-badge risk-critical">Critical</span></div>
+                            <div><button class="btn btn-danger btn-sm" onclick="investigateTransaction(this)">Investigate</button></div>
+                        </div>
+                        
+                        <div class="transaction-row" style="background: #fffbeb;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle text-warning me-3"></i>
+                                <div>
+                                    <div class="fw-bold">Unusual Location Pattern</div>
+                                    <small class="text-muted">Card: **** 8891 | New country detected</small>
+                                </div>
+                            </div>
+                            <div>$1,234.00</div>
+                            <div>Geo Anomaly</div>
+                            <div><span class="risk-badge risk-high">High</span></div>
+                            <div><button class="btn btn-warning btn-sm" onclick="reviewTransaction(this)">Review</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics & Reports Tab -->
+            <div id="reports-tab" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">Monthly Performance Report</h5>
+                            <div class="text-center py-4">
+                                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                                <p>Detailed analytics and reporting dashboard</p>
+                                <button class="btn btn-primary mt-2" id="download-full-report">
+                                    <i class="fas fa-download me-2"></i>Download Full Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="fw-bold mb-4">System Metrics</h5>
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="metric-value text-info">99.8%</div>
+                                    <div class="metric-label">Uptime</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="metric-value text-success">2.1M</div>
+                                    <div class="metric-label">Transactions</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="metric-value text-warning">0.15%</div>
+                                    <div class="metric-label">Fraud Rate</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="metric-value text-primary">98.7%</div>
+                                    <div class="metric-label">Accuracy</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="chart-container">
+                    <h5 class="fw-bold mb-4">System Configuration</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Risk Threshold</label>
+                                <input type="range" class="form-range" id="risk-threshold" min="0" max="100" value="70">
+                                <small class="text-muted">Adjust sensitivity for fraud detection</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Alert Notifications</label>
+                                <select class="form-control" id="alert-frequency">
+                                    <option>Real-time</option>
+                                    <option>Every 15 minutes</option>
+                                    <option>Hourly</option>
+                                    <option>Disabled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Model Selection</label>
+                                <select class="form-control" id="model-selection">
+                                    <option>XGBoost (Recommended)</option>
+                                    <option>Random Forest</option>
+                                    <option>Logistic Regression</option>
+                                    <option>Ensemble All Models</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Auto-retrain Frequency</label>
+                                <select class="form-control" id="retrain-frequency">
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                    <option>Manual</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn btn-primary me-2" id="save-settings">Save Settings</button>
+                        <button class="btn btn-outline-secondary" id="reset-settings">Reset to Defaults</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Avatar functionality
+function triggerAvatarUpload() {
+    document.getElementById('avatar-upload').click();
+    // Show preset options when upload is clicked
+    document.querySelector('.avatar-options').classList.add('show');
+}
+
+// Handle file upload
+document.addEventListener('DOMContentLoaded', function() {
+    // This will be added when the modal is created
+});
+
+// Update the openProfileSettings function to include file input handler
+// Avatar functionality
+function triggerAvatarUpload() {
+    document.getElementById('avatar-upload').click();
+    // Show preset options when upload is clicked
+    document.querySelector('.avatar-options').classList.add('show');
+}
+
+// Handle file upload - UPDATED VERSION
+function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    const currentAvatar = document.getElementById('current-avatar');
+    
+    if (!file) return;
+    
+    console.log('File selected:', file.name, file.type, file.size);
+    
+    if (file.size > 5 * 1024 * 1024) {
+        showAvatarMessage('File size too large. Please choose an image under 5MB.', 'error');
+        return;
+    }
+    
+    if (!file.type.startsWith('image/')) {
+        showAvatarMessage('Please select a valid image file.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        console.log('File loaded successfully');
+        
+        // Clear current avatar
+        currentAvatar.innerHTML = '';
+        currentAvatar.style.background = 'none';
+        currentAvatar.classList.add('has-image');
+        
+        // Create and add new image
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '50%';
+        
+        currentAvatar.appendChild(img);
+        
+        // Remove active class from preset options
+        document.querySelectorAll('.avatar-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        
+        showAvatarMessage('Avatar updated successfully! Click "Save Changes" to apply.', 'success');
+    };
+    
+    reader.onerror = function(error) {
+        console.error('Error reading file:', error);
+        showAvatarMessage('Error reading file. Please try again.', 'error');
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// Update the openProfileSettings function to properly set up the file input
+// REPLACE your existing openProfileSettings function with this:
+function openProfileSettings() {
+    // Create profile settings modal
+    const modalHtml = `
+        <div class="modal fade" id="profileModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-cog me-2"></i>Profile Settings
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="avatar-section">
+                                    <div class="user-avatar-large mb-3" id="current-avatar">AD</div>
+                                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="triggerAvatarUpload()">
+                                        <i class="fas fa-camera me-1"></i>Change Avatar
+                                    </button>
+                                    <div class="avatar-options mt-2">
+                                        <small class="text-muted d-block mb-1">Or choose a preset:</small>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <div class="avatar-option active" data-avatar="AD" onclick="selectPresetAvatar('AD')">AD</div>
+                                            <div class="avatar-option" data-avatar="A1" onclick="selectPresetAvatar('A1')">A1</div>
+                                            <div class="avatar-option" data-avatar="SA" onclick="selectPresetAvatar('SA')">SA</div>
+                                            <div class="avatar-option" data-avatar="AI" onclick="selectPresetAvatar('AI')">AI</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" value="Administrator">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="admin@secureshield.ai">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Role</label>
+                                    <input type="text" class="form-control" value="System Administrator" disabled>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Security Level</label>
+                                    <div class="alert alert-info py-2">
+                                        <i class="fas fa-shield-alt me-2"></i>Enhanced Security Protocol Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveProfileSettings()">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Set up the file input event listener IMMEDIATELY after adding the modal
+    setTimeout(() => {
+        const avatarUpload = document.getElementById('avatar-upload');
+        if (avatarUpload) {
+            // Remove any existing event listeners and add new one
+            avatarUpload.replaceWith(avatarUpload.cloneNode(true));
+            const newAvatarUpload = document.getElementById('avatar-upload');
+            newAvatarUpload.addEventListener('change', handleAvatarUpload);
+        }
+    }, 100);
+    
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hide
+    document.getElementById('profileModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+// Select preset avatar
+function selectPresetAvatar(avatarText) {
+    const currentAvatar = document.getElementById('current-avatar');
+    const avatarOptions = document.querySelectorAll('.avatar-option');
+    
+    // Remove active class from all options
+    avatarOptions.forEach(option => {
+        option.classList.remove('active');
+    });
+    
+    // Add active class to selected option
+    event.target.classList.add('active');
+    
+    // Update avatar display
+    currentAvatar.innerHTML = avatarText;
+    currentAvatar.style.background = 'linear-gradient(135deg, var(--accent), var(--primary))';
+    currentAvatar.classList.remove('has-image');
+    
+    // Remove any existing image
+    const existingImg = currentAvatar.querySelector('img');
+    if (existingImg) {
+        existingImg.remove();
+    }
+    
+    showAvatarMessage(`Avatar set to "${avatarText}". Click "Save Changes" to apply.`, 'success');
+}
+
+// Show avatar messages
+function showAvatarMessage(message, type) {
+    // Remove existing messages
+    const existingMessage = document.querySelector('.avatar-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `avatar-message alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show mt-2`;
+    messageDiv.innerHTML = `
+        <small>${message}</small>
+        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('.avatar-section').appendChild(messageDiv);
+    
+    // Auto remove after 5 seconds if not error
+    if (type !== 'error') {
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 5000);
+    }
+}
+
+// Update the openProfileSettings function to include avatar setup
+// Replace your existing openProfileSettings function with this:
+function openProfileSettings() {
+    // Create profile settings modal
+    const modalHtml = `
+        <div class="modal fade" id="profileModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-cog me-2"></i>Profile Settings
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="avatar-section">
+                                    <div class="user-avatar-large mb-3" id="current-avatar">AD</div>
+                                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="triggerAvatarUpload()">
+                                        <i class="fas fa-camera me-1"></i>Change Avatar
+                                    </button>
+                                    <div class="avatar-options mt-2">
+                                        <small class="text-muted d-block mb-1">Or choose a preset:</small>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <div class="avatar-option active" data-avatar="AD" onclick="selectPresetAvatar('AD')">AD</div>
+                                            <div class="avatar-option" data-avatar="A1" onclick="selectPresetAvatar('A1')">A1</div>
+                                            <div class="avatar-option" data-avatar="SA" onclick="selectPresetAvatar('SA')">SA</div>
+                                            <div class="avatar-option" data-avatar="AI" onclick="selectPresetAvatar('AI')">AI</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" value="Administrator">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="admin@secureshield.ai">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Role</label>
+                                    <input type="text" class="form-control" value="System Administrator" disabled>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Security Level</label>
+                                    <div class="alert alert-info py-2">
+                                        <i class="fas fa-shield-alt me-2"></i>Enhanced Security Protocol Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveProfileSettings()">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    modal.show();
+    
+    // Setup avatar functionality after modal is shown
+    setTimeout(() => {
+        setupAvatarUpload();
+    }, 100);
+    
+    // Remove modal from DOM after hide
+    document.getElementById('profileModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+// Update saveProfileSettings to handle avatar
+function saveProfileSettings() {
+    const currentAvatar = document.getElementById('current-avatar');
+    let avatarData = 'AD'; // default
+    
+    if (currentAvatar.classList.contains('has-image')) {
+        const img = currentAvatar.querySelector('img');
+        avatarData = img ? img.src : 'AD';
+        // In real app, you would upload this to server
+        console.log('Saving custom avatar image');
+    } else {
+        avatarData = currentAvatar.textContent;
+        console.log('Saving preset avatar:', avatarData);
+    }
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+    modal.hide();
+    
+    // Update the main avatar in the header
+    const mainAvatar = document.querySelector('.user-avatar');
+    if (currentAvatar.classList.contains('has-image')) {
+        const img = currentAvatar.querySelector('img');
+        if (img) {
+            mainAvatar.innerHTML = '';
+            mainAvatar.style.background = 'none';
+            const newImg = document.createElement('img');
+            newImg.src = img.src;
+            newImg.style.width = '100%';
+            newImg.style.height = '100%';
+            newImg.style.objectFit = 'cover';
+            newImg.style.borderRadius = '50%';
+            mainAvatar.appendChild(newImg);
+        }
+    } else {
+        mainAvatar.textContent = currentAvatar.textContent;
+        mainAvatar.style.background = 'linear-gradient(135deg, var(--accent), var(--primary))';
+    }
+    
+    // Show success message
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+    alertDiv.style.zIndex = '1060';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Profile updated successfully!</strong> Your avatar and changes have been saved.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 3000);
+}
+        // Profile Settings Function
+function openProfileSettings() {
+    // Create profile settings modal
+    const modalHtml = `
+        <div class="modal fade" id="profileModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-cog me-2"></i>Profile Settings
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+    <div class="avatar-section">
+        <div class="user-avatar-large mb-3" id="current-avatar">AD</div>
+        <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+        <button class="btn btn-outline-primary btn-sm" onclick="triggerAvatarUpload()">
+            <i class="fas fa-camera me-1"></i>Change Avatar
+        </button>
+        <div class="avatar-options mt-2">
+            <small class="text-muted d-block mb-1">Or choose a preset:</small>
+            <div class="d-flex justify-content-center gap-2">
+                <div class="avatar-option" data-avatar="AD" onclick="selectPresetAvatar('AD')">AD</div>
+                <div class="avatar-option" data-avatar="A1" onclick="selectPresetAvatar('A1')">A1</div>
+                <div class="avatar-option" data-avatar="SA" onclick="selectPresetAvatar('SA')">SA</div>
+                <div class="avatar-option" data-avatar="AI" onclick="selectPresetAvatar('AI')">AI</div>
+            </div>
+        </div>
+    </div>
+</div>
+                            <div class="col-md-8">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" value="Administrator">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="admin@secureshield.ai">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Role</label>
+                                    <input type="text" class="form-control" value="System Administrator" disabled>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Security Level</label>
+                                    <div class="alert alert-info py-2">
+                                        <i class="fas fa-shield-alt me-2"></i>Enhanced Security Protocol Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="saveProfileSettings()">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hide
+    document.getElementById('profileModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+function saveProfileSettings() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+    modal.hide();
+    
+    // Show success message
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+    alertDiv.style.zIndex = '1060';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Profile updated successfully!</strong> Your changes have been saved.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 3000);
+}
+
+// Quick Navigation Function
+function showQuickNavigation() {
+    // Create quick navigation modal
+    const modalHtml = `
+        <div class="modal fade" id="navModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-compass me-2"></i>Quick Navigation
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('dashboard')">
+                                <i class="fas fa-chart-pie me-2"></i>Dashboard Overview
+                            </button>
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('analyze')">
+                                <i class="fas fa-search me-2"></i>Transaction Analysis
+                            </button>
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('batch')">
+                                <i class="fas fa-file-csv me-2"></i>Batch Processing
+                            </button>
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('alerts')">
+                                <i class="fas fa-bell me-2"></i>Fraud Alerts
+                                <span class="badge bg-danger ms-2">12</span>
+                            </button>
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('reports')">
+                                <i class="fas fa-chart-bar me-2"></i>Analytics & Reports
+                            </button>
+                            <button class="btn btn-outline-primary text-start" onclick="showTab('settings')">
+                                <i class="fas fa-cog me-2"></i>System Settings
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('navModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hide and switch tab
+    document.getElementById('navModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+// Logout Function
+function logoutUser() {
+    // Create logout confirmation modal
+    const modalHtml = `
+        <div class="modal fade" id="logoutModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title">
+                            <i class="fas fa-sign-out-alt me-2"></i>Confirm Logout
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+                            <h5>Secure Session Logout</h5>
+                            <p class="text-muted">Are you sure you want to logout? Your session will be securely terminated.</p>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Session duration: <strong id="sessionDuration">0 mins</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-warning" onclick="confirmLogout()">Yes, Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Calculate session duration
+    const sessionDuration = Math.floor((Date.now() - sessionStartTime) / 60000);
+    const modalWithDuration = modalHtml.replace('0 mins', `${sessionDuration} mins`);
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalWithDuration);
+    const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hide
+    document.getElementById('logoutModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+function confirmLogout() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('logoutModal'));
+    modal.hide();
+    
+    // Show logout animation
+    document.body.style.opacity = '0.7';
+    document.body.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+            <div class="text-center">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <h4>Securing your session...</h4>
+                <p class="text-muted">Logging out and clearing sensitive data</p>
+            </div>
+        </div>
+    `;
+    
+    // Simulate logout process
+    setTimeout(() => {
+        alert('You have been successfully logged out. Thank you for using SecureShield AI.');
+        location.reload(); // In real app, this would redirect to login page
+    }, 2000);
+}
+
+// Track session start time
+let sessionStartTime = Date.now();
+        // Action button functions
+function investigateTransaction(button) {
+    const row = button.closest('.transaction-row');
+    const transactionId = row.querySelector('.fw-bold').textContent;
+    
+    // Create investigation modal
+    const modalHtml = `
+        <div class="modal fade" id="investigationModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-search me-2"></i>Investigate Transaction
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Transaction Details</h6>
+                                <p><strong>ID:</strong> ${transactionId}</p>
+                                <p><strong>Status:</strong> <span class="risk-badge risk-critical">Critical Risk</span></p>
+                                <p><strong>Amount:</strong> $4,567.89</p>
+                                <p><strong>Type:</strong> Multiple International</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Investigation Actions</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-danger" onclick="blockTransaction()">
+                                        <i class="fas fa-ban me-2"></i>Block Transaction
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="requestVerification()">
+                                        <i class="fas fa-shield-alt me-2"></i>Request Verification
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="contactCustomer()">
+                                        <i class="fas fa-phone me-2"></i>Contact Customer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Risk Analysis</h6>
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar bg-danger" style="width: 85%"></div>
+                                <div class="progress-bar bg-warning" style="width: 10%"></div>
+                                <div class="progress-bar bg-success" style="width: 5%"></div>
+                            </div>
+                            <small class="text-muted">High probability of fraudulent activity detected</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="markAsResolved()">Mark as Resolved</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body and show it
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('investigationModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hide
+    document.getElementById('investigationModal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+    });
+}
+
+// Investigation action functions
+function blockTransaction() {
+    alert('Transaction blocked successfully! Customer has been notified.');
+}
+
+function requestVerification() {
+    alert('Verification request sent to customer via SMS and Email.');
+}
+
+function contactCustomer() {
+    alert('Customer service team has been notified to contact the customer.');
+}
+
+function markAsResolved() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('investigationModal'));
+    modal.hide();
+    alert('Investigation marked as resolved and case closed.');
+}
+
+function reviewTransaction(button) {
+    const row = button.closest('.transaction-row');
+    const transactionDesc = row.querySelector('.fw-bold').textContent;
+    
+    // Update the row to show it's under review
+    row.style.background = '#e8f4fd';
+    row.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-clock text-info me-3"></i>
+            <div>
+                <div class="fw-bold">${transactionDesc}</div>
+                <small class="text-muted">Under Review - Awaiting Analysis</small>
+            </div>
+        </div>
+        <div>$1,234.00</div>
+        <div>Geo Anomaly</div>
+        <div><span class="risk-badge risk-high">Under Review</span></div>
+        <div>
+            <button class="btn btn-success btn-sm" onclick="approveTransaction(this)">
+                <i class="fas fa-check me-1"></i>Approve
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="rejectTransaction(this)">
+                <i class="fas fa-times me-1"></i>Reject
+            </button>
+        </div>
+    `;
+    
+    // Show notification
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-info alert-dismissible fade show m-3';
+    alertDiv.innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Transaction flagged for review</strong> - Please complete the analysis within 24 hours
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('.chart-container').insertBefore(alertDiv, document.querySelector('.table-content'));
+}
+
+// Review action functions
+function approveTransaction(button) {
+    const row = button.closest('.transaction-row');
+    row.style.background = '';
+    row.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle text-success me-3"></i>
+            <div>
+                <div class="fw-bold">Transaction Approved</div>
+                <small class="text-muted">Manually verified - Low risk</small>
+            </div>
+        </div>
+        <div>$1,234.00</div>
+        <div>Geo Anomaly</div>
+        <div><span class="risk-badge risk-low">Approved</span></div>
+        <div class="text-success fw-bold">APPROVED</div>
+    `;
+    alert('Transaction approved and processed successfully.');
+}
+
+function rejectTransaction(button) {
+    const row = button.closest('.transaction-row');
+    row.style.background = '#fef2f2';
+    row.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-times-circle text-danger me-3"></i>
+            <div>
+                <div class="fw-bold">Transaction Rejected</div>
+                <small class="text-muted">Flagged as fraudulent</small>
+            </div>
+        </div>
+        <div>$1,234.00</div>
+        <div>Geo Anomaly</div>
+        <div><span class="risk-badge risk-critical">Rejected</span></div>
+        <div class="text-danger fw-bold">REJECTED</div>
+    `;
+    alert('Transaction rejected and customer notified.');
+}
+
+function viewAllTransactions() {
+    // Show loading in the transactions section
+    const tableContent = document.querySelector('.table-content');
+    const originalContent = tableContent.innerHTML;
+    
+    tableContent.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading all high-risk transactions...</p>
+        </div>
+    `;
+    
+    // Simulate API call delay
+    setTimeout(() => {
+        tableContent.innerHTML = `
+            <div class="transaction-row" style="background: #fef2f2;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-credit-card text-danger me-3"></i>
+                    <div>
+                        <div class="fw-bold">TX-7845-2291</div>
+                        <small class="text-muted">Card ending 4512</small>
+                    </div>
+                </div>
+                <div>$2,847.50</div>
+                <div>Electronics Store</div>
+                <div><span class="risk-badge risk-critical">Critical</span></div>
+                <div class="text-danger fw-bold">94.2%</div>
+            </div>
+            <div class="transaction-row" style="background: #fffbeb;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-credit-card text-warning me-3"></i>
+                    <div>
+                        <div class="fw-bold">TX-8923-5567</div>
+                        <small class="text-muted">Card ending 8891</small>
+                    </div>
+                </div>
+                <div>$1,234.00</div>
+                <div>Online Retail</div>
+                <div><span class="risk-badge risk-high">High</span></div>
+                <div class="text-warning fw-bold">78.5%</div>
+            </div>
+            <div class="transaction-row">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-credit-card text-warning me-3"></i>
+                    <div>
+                        <div class="fw-bold">TX-5678-9012</div>
+                        <small class="text-muted">Card ending 6677</small>
+                    </div>
+                </div>
+                <div>$3,456.78</div>
+                <div>Luxury Goods</div>
+                <div><span class="risk-badge risk-high">High</span></div>
+                <div class="text-warning fw-bold">82.1%</div>
+            </div>
+            <div class="transaction-row">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-credit-card text-danger me-3"></i>
+                    <div>
+                        <div class="fw-bold">TX-3456-7821</div>
+                        <small class="text-muted">Card ending 3345</small>
+                    </div>
+                </div>
+                <div>$45.67</div>
+                <div>Coffee Shop</div>
+                <div><span class="risk-badge risk-low">Low</span></div>
+                <div class="text-success">12.3%</div>
+            </div>
+            <div class="transaction-row">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-credit-card text-warning me-3"></i>
+                    <div>
+                        <div class="fw-bold">TX-1122-3344</div>
+                        <small class="text-muted">Card ending 9988</small>
+                    </div>
+                </div>
+                <div>$789.00</div>
+                <div>Travel Agency</div>
+                <div><span class="risk-badge risk-medium">Medium</span></div>
+                <div class="text-info">45.6%</div>
+            </div>
+        `;
+        
+        // Show success message
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show m-3';
+        alertDiv.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Loaded 5 additional transactions</strong> - Showing all high-risk transactions
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        tableContent.parentNode.insertBefore(alertDiv, tableContent);
+        
+    }, 1500);
+}
+        // Initialize Charts
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Detection Accuracy',
+                    data: [95.2, 96.1, 95.8, 96.5, 97.2, 96.8, 96.4],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Fraud Recall',
+                    data: [87.5, 88.2, 89.1, 90.3, 89.8, 88.9, 89.8],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 85,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        const riskChart = new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Low Risk', 'Medium Risk', 'High Risk', 'Critical'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: [
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#7f1d1d'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Professional status management
+function initializeProfessionalStatus() {
+    const statusElement = document.getElementById('last-login-status');
+    const loginTime = new Date();
+    
+    // Format login time
+    const formattedTime = loginTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+    
+    // Professional status messages
+    const statusMessages = [
+        { icon: 'fa-shield-alt', text: `Session started at ${formattedTime}` },
+        { icon: 'fa-chart-line', text: 'Monitoring 1,247 transactions' },
+        { icon: 'fa-bell', text: '12 active alerts' },
+        { icon: 'fa-check-circle', text: 'All systems operational' },
+        { icon: 'fa-clock', text: 'Real-time analysis active' }
+    ];
+    
+    let currentIndex = 0;
+    
+    // Update status every 8 seconds
+    setInterval(() => {
+        const status = statusMessages[currentIndex];
+        statusElement.innerHTML = `
+            <i class="fas ${status.icon} me-1"></i> ${status.text}
+        `;
+        
+        currentIndex = (currentIndex + 1) % statusMessages.length;
+    }, 8000);
+    
+    // Set initial status
+    statusElement.innerHTML = `
+        <i class="fas ${statusMessages[0].icon} me-1"></i> ${statusMessages[0].text}
+    `;
+}
+
+// Session timer for professional display
+function startSessionTimer() {
+    let sessionSeconds = 0;
+    const statusElement = document.getElementById('last-login-status');
+    
+    setInterval(() => {
+        sessionSeconds++;
+        
+        // Update every minute with professional messaging
+        if (sessionSeconds % 60 === 0) {
+            const minutes = sessionSeconds / 60;
+            const statusMessages = [
+                `Secure session: ${minutes} min`,
+                `Active monitoring: ${minutes} min`,
+                `System uptime: ${minutes} min`,
+                `Continuous analysis: ${minutes} min`
+            ];
+            
+            const randomMessage = statusMessages[Math.floor(Math.random() * statusMessages.length)];
+            statusElement.innerHTML = `<i class="fas fa-lock me-1"></i> ${randomMessage}`;
+        }
+    }, 1000);
+}
+
+        // Tab Navigation - COMPLETELY FIXED VERSION
+        function initializeNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    showTab(tabName);
+                });
+            });
+        }
+
+        function showTab(tabName) {
+            console.log('Switching to tab:', tabName);
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Add active class to clicked nav item
+            const activeNavItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Fraud Detection Dashboard',
+                'analyze': 'Transaction Analysis',
+                'batch': 'Batch Processing',
+                'alerts': 'Fraud Alerts & Monitoring',
+                'reports': 'Analytics & Reports',
+                'settings': 'System Settings'
+            };
+            document.getElementById('page-title').textContent = titles[tabName] || 'FraudShield AI';
+        }
+
+        // Transaction Analysis
+        function analyzeTransaction() {
+            const resultsDiv = document.getElementById('analysis-results');
+            const amount = document.getElementById('analyze-amount').value;
+            
+            resultsDiv.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Analyzing transaction patterns...</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                const fraudProbability = 67.8 + (Math.random() * 30 - 15);
+                const riskLevel = fraudProbability > 80 ? 'critical' : 
+                                 fraudProbability > 60 ? 'high' :
+                                 fraudProbability > 30 ? 'medium' : 'low';
+                
+                const riskLabels = {
+                    'critical': 'Critical',
+                    'high': 'High',
+                    'medium': 'Medium',
+                    'low': 'Low'
+                };
+                
+                const riskColors = {
+                    'critical': 'danger',
+                    'high': 'warning',
+                    'medium': 'info',
+                    'low': 'success'
+                };
+                
+                resultsDiv.innerHTML = `
+                    <div class="text-center mb-4">
+                        <div class="display-4 fw-bold text-${riskColors[riskLevel]}">${fraudProbability.toFixed(1)}%</div>
+                        <div class="risk-badge risk-${riskLevel} mt-2">${riskLabels[riskLevel]} Risk</div>
+                    </div>
+                    
+                    <div class="alert alert-${riskColors[riskLevel]}">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Risk Assessment</h6>
+                        <p class="mb-2">Transaction amount: <strong>$${amount}</strong></p>
+                        <p class="mb-0">${getRiskRecommendation(riskLevel)}</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Pattern Analysis</h6>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: 45%"></div>
+                            <div class="progress-bar bg-warning" style="width: 25%"></div>
+                            <div class="progress-bar bg-danger" style="width: 30%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>Normal</span>
+                            <span>Suspicious</span>
+                            <span>Fraud Pattern</span>
+                        </div>
+                    </div>
+                `;
+            }, 2000);
+        }
+
+        function getRiskRecommendation(riskLevel) {
+            const recommendations = {
+                'critical': '🚨 IMMEDIATE ACTION REQUIRED: Block transaction and initiate fraud investigation protocol.',
+                'high': '⚠️ HIGH RISK: Require additional verification and consider transaction blocking.',
+                'medium': '🔍 MEDIUM RISK: Flag for review and request customer confirmation.',
+                'low': '✅ LOW RISK: Transaction appears legitimate. Process with standard monitoring.'
+            };
+            return recommendations[riskLevel];
+        }
+
+        // Batch Processing
+        function processBatch() {
+            const resultsDiv = document.getElementById('batch-results');
+            const fileInput = document.getElementById('batch-file');
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a CSV file to process.');
+                return;
+            }
+            
+            resultsDiv.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Processing batch file...</p>
+                    <div class="progress mt-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                document.querySelector('.progress-bar').style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    showBatchResults();
+                }
+            }, 200);
+        }
+
+        function showBatchResults() {
+            const resultsDiv = document.getElementById('batch-results');
+            const fileName = document.getElementById('batch-file').files[0].name;
+            
+            resultsDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-check-circle me-2"></i>Batch Processing Complete</h6>
+                    <p class="mb-2">File: <strong>${fileName}</strong></p>
+                    <p class="mb-0">Processing time: <strong>2.3 seconds</strong></p>
+                </div>
+                
+                <div class="row text-center mt-4">
+                    <div class="col-md-3">
+                        <div class="metric-value text-primary">1,247</div>
+                        <div class="metric-label">Transactions</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-value text-warning">23</div>
+                        <div class="metric-label">High Risk</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-value text-danger">8</div>
+                        <div class="metric-label">Critical</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-value text-success">98.1%</div>
+                        <div class="metric-label">Accuracy</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button class="btn btn-outline-primary w-100" id="download-detailed-report">
+                        <i class="fas fa-download me-2"></i>Download Detailed Report
+                    </button>
+                </div>
+            `;
+            
+            // Add event listener for the download button
+            document.getElementById('download-detailed-report').addEventListener('click', downloadDetailedReport);
+        }
+
+        // Download functions
+        function downloadDetailedReport() {
+    // Create a dummy CSV content for download
+    const csvContent = "Transaction ID,Amount,Risk Score,Status\nTX-7845-2291,2847.50,94.2,Critical\nTX-8923-5567,1234.00,78.5,High\nTX-3456-7821,45.67,12.3,Low";
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'detailed_fraud_report.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    console.log('Detailed report download initiated');
+}
+
+        function downloadFullReport() {
+    // Create a dummy PDF report content
+    const pdfContent = "%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n100 700 Td\n(SecureShield AI - Monthly Report) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000239 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n307\n%%EOF";
+    const blob = new Blob([pdfContent], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'secure_shield_monthly_report.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    console.log('Full report download initiated');
+}
+
+        // Settings functions
+        function saveSettings() {
+    const riskThreshold = document.getElementById('risk-threshold').value;
+    const alertFrequency = document.getElementById('alert-frequency').value;
+    const modelSelection = document.getElementById('model-selection').value;
+    const retrainFrequency = document.getElementById('retrain-frequency').value;
+    
+    // Show visual feedback
+    const saveButton = document.getElementById('save-settings');
+    const originalText = saveButton.innerHTML;
+    
+    saveButton.innerHTML = '<i class="fas fa-check me-2"></i>Saved!';
+    saveButton.classList.add('btn-success');
+    
+    // Create success alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Settings saved successfully!</strong><br>
+        Risk Threshold: ${riskThreshold}% | Alert Frequency: ${alertFrequency}<br>
+        Model: ${modelSelection} | Retrain: ${retrainFrequency}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Insert alert after the settings buttons
+    const settingsContainer = document.querySelector('#settings-tab .chart-container');
+    const buttonsContainer = settingsContainer.querySelector('.mt-4');
+    settingsContainer.insertBefore(alertDiv, buttonsContainer.nextSibling);
+    
+    // Reset button appearance after 2 seconds
+    setTimeout(() => {
+        saveButton.innerHTML = originalText;
+        saveButton.classList.remove('btn-success');
+    }, 2000);
+    
+    console.log('Settings saved:', {
+        riskThreshold,
+        alertFrequency,
+        modelSelection,
+        retrainFrequency
+    });
+}
+
+        function resetSettings() {
+    // Show confirmation dialog
+    const confirmed = confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.');
+    
+    if (!confirmed) {
+        return; // User cancelled the reset
+    }
+    
+    // Reset risk threshold slider
+    document.getElementById('risk-threshold').value = 70;
+    
+    // Reset alert frequency dropdown
+    document.getElementById('alert-frequency').value = 'Real-time';
+    
+    // Reset model selection dropdown
+    document.getElementById('model-selection').value = 'XGBoost (Recommended)';
+    
+    // Reset retrain frequency dropdown
+    document.getElementById('retrain-frequency').value = 'Daily';
+    
+    // Show visual feedback
+    const resetButton = document.getElementById('reset-settings');
+    const originalText = resetButton.innerHTML;
+    
+    resetButton.innerHTML = '<i class="fas fa-check me-2"></i>Reset Complete!';
+    resetButton.classList.remove('btn-outline-secondary');
+    resetButton.classList.add('btn-success');
+    
+    // Create success alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Settings reset to default values!</strong> All configurations have been restored to factory defaults.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Insert alert after the settings buttons
+    const settingsContainer = document.querySelector('#settings-tab .chart-container');
+    const buttonsContainer = settingsContainer.querySelector('.mt-4');
+    settingsContainer.insertBefore(alertDiv, buttonsContainer.nextSibling);
+    
+    // Reset button appearance after 2 seconds
+    setTimeout(() => {
+        resetButton.innerHTML = originalText;
+        resetButton.classList.remove('btn-success');
+        resetButton.classList.add('btn-outline-secondary');
+    }, 2000);
+    
+    console.log('Settings reset to defaults');
+}
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize navigation
+            initializeNavigation();
+            
+            // Add event listeners for download buttons
+            document.getElementById('download-full-report').addEventListener('click', downloadFullReport);
+            
+            //Initialize professional user status
+            initializeProfessionalStatus();
+            startSessionTimer();
+            sessionStartTime = Date.now();
+            // Add event listeners for settings buttons
+            document.getElementById('save-settings').addEventListener('click', saveSettings);
+            document.getElementById('reset-settings').addEventListener('click', resetSettings);
+            
+            // Add fade-in animation to metrics
+            document.querySelectorAll('.metric-card').forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+                card.classList.add('fade-in');
+            });
+            
+            console.log('Dashboard initialized successfully - All navigation and buttons should work now!');
+        });
+    </script>
+</body>
+</html>
